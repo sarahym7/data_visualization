@@ -252,9 +252,27 @@ Trendy plots
 ```{r}
 weather_df %>% 
   ggplot(aes(x = name, y =tmin, fill = name)) + 
-  geom_violin()
+  geom_violin(alpha = 0.5)+
+  stat_summary(fun = "median") #gives us the median , stats summary alone will give mean 
 
 ```
+
+Ridge plots -- the most popular plot of 2017
+useful in specific circumstances
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = name)) + 
+  geom_density_ridges()
+
+```
+
+
+
+
+
+
+
 
 
 

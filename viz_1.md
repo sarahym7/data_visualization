@@ -497,10 +497,33 @@ Trendy plots
 ``` r
 weather_df %>% 
   ggplot(aes(x = name, y =tmin, fill = name)) + 
-  geom_violin()
+  geom_violin(alpha = 0.5)+
+  stat_summary(fun = "median") #gives us the median , stats summary alone will give mean 
 ```
 
     ## Warning: Removed 17 rows containing non-finite outside the scale range
     ## (`stat_ydensity()`).
 
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_summary()`).
+
+    ## Warning: Removed 3 rows containing missing values or values outside the scale range
+    ## (`geom_segment()`).
+
 ![](viz_1_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+
+Ridge plots – the most popular plot of 2017 useful in specific
+circumstances
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin, y = name)) + 
+  geom_density_ridges()
+```
+
+    ## Picking joint bandwidth of 1.41
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_density_ridges()`).
+
+![](viz_1_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
