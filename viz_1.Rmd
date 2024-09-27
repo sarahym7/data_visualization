@@ -4,3 +4,69 @@ author: "Sarahy Martinez"
 date: "2024-09-27"
 output: github_document
 ---
+
+```{r}
+library(tidyverse)
+library(ggridges)
+
+```
+
+
+# Load the Weather data 
+We’ll be working with NOAA weather data, which is downloaded using rnoaa::meteo_pull_monitors function in the code chunk below; similar code underlies the weather dataset used elsewhere in the course. Because this process can take some time, I’ll cache the code chunk.
+- create data frame not imported from reader instead rnoaa:: meteo_pull , the rnoa allows to access aggregated public service data, using it as a portal and telling I want data from these station and the min and max temps. then start date and final date. code goes online and says bring me this data. then name= to rename the weather stations. the tmin = tmin/10 bc temps from rnoa are 10th of degree celcuis and end with full degree max.then just relocate. 
+
+```{r}
+weather_df = 
+  rnoaa::meteo_pull_monitors(
+    c("USW00094728", "USW00022534", "USS0023B17S"),
+    var = c("PRCP", "TMIN", "TMAX"), 
+    date_min = "2021-01-01",
+    date_max = "2022-12-31") |>
+  mutate(
+    name = case_match(
+      id, 
+      "USW00094728" ~ "CentralPark_NY", 
+      "USW00022534" ~ "Molokai_HI",
+      "USS0023B17S" ~ "Waterhole_WA"),
+    tmin = tmin / 10,
+    tmax = tmax / 10) |>
+  select(name, id, everything())
+
+
+weather_df
+```
+
+As always, I start by looking at the data; below I’m showing the result of printing the dataframe in the console, but would also use view(weather_df) to look around a bit.
+
+#Scatterplots! 
+
+
+Create my first scatterplot ever.
+
+```{r}
+
+ggplot(weather_df, aes(x = tmin, y = tmax ))
+
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
