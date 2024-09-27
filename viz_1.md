@@ -380,10 +380,127 @@ You can use a neat geom !
 ``` r
 weather_df %>% 
   ggplot(aes(x = tmin, y= tmax)) +
-  geom_hex()   #makes a hexagonal data with gradient, brighter color = lots of data points and the other not                 as much 
+  geom_hex()   #makes a hexagonal data with gradient, brighter color = lots of data points and the other not                 as much 10k, 20k tells more of what data distribution looks like 
 ```
 
     ## Warning: Removed 17 rows containing non-finite outside the scale range
     ## (`stat_binhex()`).
 
 ![](viz_1_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin, y= tmax)) +
+  geom_density2d() +
+  geom_point(alpha=0.3)
+```
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_density2d()`).
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](viz_1_files/figure-gfm/unnamed-chunk-14-2.png)<!-- -->
+
+## Univariate Plots
+
+1.  Histograms
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin)) +
+  geom_histogram()
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_bin()`).
+
+![](viz_1_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+
+Adding color to histogram, can get a bit strange
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin, color = name)) +
+  geom_histogram()
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_bin()`).
+
+![](viz_1_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+
+``` r
+# location not great and color is outside of the bars so we will postion so it can dodge instead stack, also filling each bar by using fill.  
+
+weather_df %>% 
+  ggplot(aes(x = tmin, fill = name)) +
+  geom_histogram(position = "dodge")
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_bin()`).
+
+![](viz_1_files/figure-gfm/unnamed-chunk-16-2.png)<!-- -->
+
+``` r
+#lets not worry about dodging and instead do a facet 
+
+weather_df %>% 
+  ggplot(aes(x = tmin, fill = name)) +
+  geom_histogram()+
+  facet_grid(. ~ name)
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_bin()`).
+
+![](viz_1_files/figure-gfm/unnamed-chunk-16-3.png)<!-- -->
+
+New Geometry
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin, fill = name)) +
+  geom_density(alpha=0.3, adjust=0.5)  #adjusting will give bumps of other info 
+```
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_density()`).
+
+![](viz_1_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+
+What about box plots?
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = name, y= tmin)) + #strange bc assigning x andy values instead here we are doing categorical.
+  geom_boxplot()
+```
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_boxplot()`).
+
+![](viz_1_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+
+Trendy plots
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = name, y =tmin, fill = name)) + 
+  geom_violin()
+```
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_ydensity()`).
+
+![](viz_1_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->

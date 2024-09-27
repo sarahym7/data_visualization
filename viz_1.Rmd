@@ -185,15 +185,76 @@ You can use a neat geom !
 
 weather_df %>% 
   ggplot(aes(x = tmin, y= tmax)) +
-  geom_hex()   #makes a hexagonal data with gradient, brighter color = lots of data points and the other not                 as much 
+  geom_hex()   #makes a hexagonal data with gradient, brighter color = lots of data points and the other not                 as much 10k, 20k tells more of what data distribution looks like 
+
+
+weather_df %>% 
+  ggplot(aes(x = tmin, y= tmax)) +
+  geom_density2d() +
+  geom_point(alpha=0.3)
+```
+
+## Univariate Plots 
+
+1. Histograms 
+
+```{r}
+
+weather_df %>% 
+  ggplot(aes(x = tmin)) +
+  geom_histogram()
+
 ```
 
 
+Adding color to histogram, can get a bit strange 
+
+```{r}
 
 
+weather_df %>% 
+  ggplot(aes(x = tmin, color = name)) +
+  geom_histogram()
+# location not great and color is outside of the bars so we will postion so it can dodge instead stack, also filling each bar by using fill.  
 
+weather_df %>% 
+  ggplot(aes(x = tmin, fill = name)) +
+  geom_histogram(position = "dodge")
 
+#lets not worry about dodging and instead do a facet 
 
+weather_df %>% 
+  ggplot(aes(x = tmin, fill = name)) +
+  geom_histogram()+
+  facet_grid(. ~ name)
+
+```
+
+New Geometry
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, fill = name)) +
+  geom_density(alpha=0.3, adjust=0.5)  #adjusting will give bumps of other info 
+ 
+```
+
+What about box plots?
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = name, y= tmin)) + #strange bc assigning x andy values instead here we are doing categorical.
+  geom_boxplot()
+
+```
+
+Trendy plots 
+```{r}
+weather_df %>% 
+  ggplot(aes(x = name, y =tmin, fill = name)) + 
+  geom_violin()
+
+```
 
 
 
