@@ -8,6 +8,7 @@ output: github_document
 ```{r}
 library(tidyverse)
 library(ggridges)
+library(hexbin)
 
 ```
 
@@ -46,13 +47,146 @@ Create my first scatterplot ever.
 
 ```{r}
 
-ggplot(weather_df, aes(x = tmin, y = tmax ))
+ggplot(weather_df, aes(x = tmin, y = tmax )) + 
+  geom_point()
+
+```
 
 
+New approach, same plot.
+
+```{r}
+
+#good way because can also data manipulate 
+weather_df %>% 
+  ggplot(aes(x = tmin, y= tmax))+
+  geom_point()
+
+```
+
+Save and edit plot object 
+
+```{r}
+weather_plot = 
+  weather_df %>% 
+  ggplot(aes(x= tmin, y = tmax))   #plot created and saved
+
+weather_plot  #now its saved and we can change it later on, can also print it.
+```
+
+## Advanced Scatter Plot 
+
+```{r}
+  weather_df %>% 
+  ggplot(aes(x= tmin, y = tmax, color= name))+ geom_point() #adding aes,
+
+```
+
+Adding new geometry, to give line that goes through, geom_smooth and add ste= false
+
+```{r}
+  weather_df %>% 
+  ggplot(aes(x= tmin, y = tmax, color= name)) +
+  geom_point()+
+  geom_smooth(se = FALSE)
+```
+
+What about the aes placement? 
+we specified inside teh ggplot but we can also do it in geom_point 
+
+```{r}
+  weather_df %>% 
+  ggplot(aes(x= tmin, y = tmax)) +
+  geom_point(aes(color= name))
+
+# not much of a difference but it will start once we add geom_smooth 
+
+```
+
+```{r}
+
+ weather_df %>% 
+  ggplot(aes(x= tmin, y = tmax)) +
+  geom_point(aes(color= name))
+  geom_smooth()
+  
+  #color only applied to the scatter plot, we can define aes in ggplot and geom
+  ggplot(weather_df, aes(x = tmin, y = tmax)) + 
+  geom_point(aes(color = name), alpha = .5) +
+  geom_smooth(se = FALSE)
+```
+
+
+Lets facet some things! 
+
+```{r}
+ weather_df %>% 
+  ggplot(aes(x= tmin, y = tmax, color= name)) +
+  geom_point()+
+  geom_smooth(se = FALSE)
+  facet_grid(. ~ name)  #we want a multipanel plot
+  
+  #same thing just not using pipe function 
+  ggplot(weather_df, aes(x = tmin, y = tmax, color = name)) + 
+  geom_point(alpha = .5) +   #adjust the alpha level for transperancy
+  geom_smooth(se = FALSE) + 
+  facet_grid(. ~ name) # . means don't create rows, instead columns that describe name vice versa
+```
+
+
+We can also see if we do alpha= tmin in the code 
+
+```{r}
+  ggplot(weather_df, aes(x = tmin, alpha = tmin, y = tmax, color = name)) + 
+  geom_point() +  
+  geom_smooth(se = FALSE) + 
+  facet_grid(. ~ name)
+
+
+# tmin more transparent at the bottom and darker at the top 
+
+#global option when do the # geom_point (alpha=0.2)
+
+
+  ggplot(weather_df, aes(x = tmin, y = tmax, color = name)) + 
+  geom_point(alpha= 0.2) +  
+  geom_smooth(se = FALSE) + 
+  facet_grid(. ~ name)
 
 
 ```
 
+
+Let's combine some elements and try a new plot
+
+```{r}
+
+weather_df %>% 
+  ggplot(aes(x = date, y = tmax, color = name)) +
+  geom_point(aes(size = prcp),alpha = 0.5) +  #shows the points in size perspective with aes(size= prcp)
+  geom_smooth(se = FALSE) +
+  facet_grid(. ~ name)
+
+```
+
+## Some small notes 
+
+How many geoms have to exist?
+```{r}
+weather_df %>% 
+  ggplot(aes( x = tmin, y= tmax, color = name)) +
+  geom_smooth(se= FALSE)
+#is a scatterplot required? no but a plot with just have smooth curve with no data points, but geom_point shows points. Here it just shows the smooth lines. 
+```
+
+You can use a neat geom !
+
+```{r}
+
+weather_df %>% 
+  ggplot(aes(x = tmin, y= tmax)) +
+  geom_hex()   #makes a hexagonal data with gradient, brighter color = lots of data points and the other not                 as much 
+```
 
 
 
