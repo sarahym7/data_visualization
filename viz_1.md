@@ -527,3 +527,48 @@ weather_df %>%
     ## (`stat_density_ridges()`).
 
 ![](viz_1_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+
+\#Saving plots and embedding
+
+Lets save a scatterplot.
+
+1.  define an object that holds the plot (weath_plot)
+
+``` r
+weather_plot = 
+weather_df %>% 
+  ggplot(aes( x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = 0.5)
+```
+
+or ggsave ..(filename or path)
+
+``` r
+ggsave("./data/weather_plot.pdf", weather_plot, width = 8, height = 5)
+```
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+What about embedding , knit the whole thing will make plots
+
+``` r
+weather_plot 
+```
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](viz_1_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+
+everytime knit will save figure, strange bc we can do something dif by
+chunk options, embedding at different sizes.
+
+``` r
+weather_plot 
+```
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](viz_1_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->

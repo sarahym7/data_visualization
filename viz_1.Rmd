@@ -267,10 +267,44 @@ weather_df %>%
 
 ```
 
+#Saving plots and embedding 
+
+Lets save a scatterplot.
+
+  1. define an object that holds the plot (weath_plot)
+
+```{r}
+
+weather_plot = 
+weather_df %>% 
+  ggplot(aes( x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = 0.5)
+
+```
+or ggsave ..(filename or path)
+```{r}
+
+ggsave("./data/weather_plot.pdf", weather_plot, width = 8, height = 5)
+
+```
+
+
+What about embedding , knit the whole thing will make plots
+```{r,fig.width=6, fig.height=3}
+weather_plot 
+```
+
+everytime knit will save figure, strange bc we can do something dif by chunk options,
+embedding at different sizes. 
+
+```{r, fig.width=12, fig.height=6}
+
+
+weather_plot 
 
 
 
-
+```
 
 
 
