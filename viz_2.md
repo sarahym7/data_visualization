@@ -454,3 +454,64 @@ weather_df %>%
 ``` r
 #if you need to make a plot like this using ggplot will be hard, so recognize as a data tidyness issue instead makes it easier.
 ```
+
+## Revisit Pups
+
+Data from the FAS study.
+
+``` r
+pup_data = 
+  read_csv("./data/FAS_pups.csv", na = c("NA", ".", "")) |>
+  janitor::clean_names() |>
+  mutate(
+    sex = 
+      case_match(
+        sex, 
+        1 ~ "male", 
+        2 ~ "female"))
+```
+
+    ## Rows: 313 Columns: 6
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (1): Litter Number
+    ## dbl (5): Sex, PD ears, PD eyes, PD pivot, PD walk
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
+litter_data = 
+  read_csv("./data/FAS_litters.csv", na = c("NA", ".", "")) |>
+  janitor::clean_names() |>                                     #we see a con7 and con8 so separate group into dose and day of TX
+  separate(group, into = c("dose", "day_of_tx"), sep = 3)  #separated by 3 characters
+```
+
+    ## Rows: 49 Columns: 8
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (2): Group, Litter Number
+    ## dbl (6): GD0 weight, GD18 weight, GD of Birth, Pups born alive, Pups dead @ ...
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
+fas_data = left_join(pup_data, litter_data, by = "litter_number")  #create a FAS into pups by joining by litter number
+# take a look of what you have. litter numberm sex, outcomes, dose, day of tx
+
+
+fas_data |> 
+  select(sex, dose, day_of_tx, pd_ears:pd_walk) |>  #get rid of uneccessary variables and keep
+  pivot_longer(      #moved from wide to long
+    pd_ears:pd_walk,
+    names_to = "outcome", 
+    values_to = "pn_day") |> 
+  drop_na() |> 
+  mutate(outcome = forcats::fct_reorder(outcome, pn_day, median)) |> #fct_reorder 
+  ggplot(aes(x = dose, y = pn_day)) + 
+  geom_violin() + 
+  facet_grid(day_of_tx ~ outcome) # in plot here day of tx against outcome interested 
+```
+
+![](viz_2_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->

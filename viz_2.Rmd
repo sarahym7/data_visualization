@@ -356,6 +356,47 @@ weather_df %>%
 ```
 
 
+## Revisit Pups 
+
+Data from the FAS study.
+
+```{r}
+
+pup_data = 
+  read_csv("./data/FAS_pups.csv", na = c("NA", ".", "")) |>
+  janitor::clean_names() |>
+  mutate(
+    sex = 
+      case_match(
+        sex, 
+        1 ~ "male", 
+        2 ~ "female"))
+
+
+litter_data = 
+  read_csv("./data/FAS_litters.csv", na = c("NA", ".", "")) |>
+  janitor::clean_names() |>                                     #we see a con7 and con8 so separate group into dose and day of TX
+  separate(group, into = c("dose", "day_of_tx"), sep = 3)  #separated by 3 characters
+
+
+fas_data = left_join(pup_data, litter_data, by = "litter_number")  #create a FAS into pups by joining by litter number
+# take a look of what you have. litter numberm sex, outcomes, dose, day of tx
+
+
+fas_data |> 
+  select(sex, dose, day_of_tx, pd_ears:pd_walk) |>  #get rid of uneccessary variables and keep
+  pivot_longer(      #moved from wide to long
+    pd_ears:pd_walk,
+    names_to = "outcome", 
+    values_to = "pn_day") |> 
+  drop_na() |> 
+  mutate(outcome = forcats::fct_reorder(outcome, pn_day, median)) |> #fct_reorder 
+  ggplot(aes(x = dose, y = pn_day)) + 
+  geom_violin() + 
+  facet_grid(day_of_tx ~ outcome) # in plot here day of tx against outcome interested 
+
+```
+
 
 
 
