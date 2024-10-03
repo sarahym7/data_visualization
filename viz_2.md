@@ -320,3 +320,61 @@ dataset applies to which geometry.
 Use often when you need OR want to display a summary that you have
 computed from a dataset that is more complicated than the mean and
 median. Often create a second dataset and then use in the arguement.
+
+## `patchwork`
+
+remeber faceting?
+
+``` r
+weather_df %>% 
+  ggplot( aes(x= tmin, fill = name)) +
+  geom_density( alpha = .5) + #if this plot was more complicated we would facet to end with a three panel plot
+  facet_grid(. ~ name)
+```
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_density()`).
+
+![](viz_2_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+
+What happens when you want multipanel plots but can’t facet? -
+encourages grid extra instead of patchwork
+
+``` r
+tmax_tmin_p = weather_df %>% 
+  ggplot( aes(x= tmin, y = tmax, color = name)) +
+  geom_point( alpha = .5) + #if this plot was more complicated we would facet to end with a three panel plot
+  theme(legend.postion = "none")
+
+prcp_dens_p = 
+  weather_df %>% 
+  filter(prcp > 0) %>%  
+  ggplot(aes(x = prcp, fill = name)) +     #we are seeing almost no precipitation so there is a small spike, therefore filter to prcp>0
+  geom_density(alpha = .5) + 
+  theme(legend.position = "none")
+
+tmax_date_p = 
+  weather_df |> 
+  ggplot(aes(x = date, y = tmax, color = name)) + 
+  geom_point(alpha = .5) +
+  geom_smooth(se = FALSE) + 
+  theme(legend.position = "bottom")
+
+(tmax_tmin_p + prcp_dens_p) / tmax_date_p  #patchwork makes different panels with combining diff datasets / puts that plot below
+```
+
+    ## Warning in plot_theme(plot): The `legend.postion` theme element is not defined
+    ## in the element hierarchy.
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+    ## `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_smooth()`).
+    ## Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](viz_2_files/figure-gfm/unnamed-chunk-14-1.png)<!-- --> Create
+individual datasets/ panels cant do by facet but we can use patchwork.
