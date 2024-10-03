@@ -390,7 +390,7 @@ fas_data |>
     names_to = "outcome", 
     values_to = "pn_day") |> 
   drop_na() |> 
-  mutate(outcome = forcats::fct_reorder(outcome, pn_day, median)) |> #fct_reorder 
+  mutate(outcome = forcats::fct_reorder(outcome, pn_day, median)) |> #fct_reorder organizing outcome order by pn_day
   ggplot(aes(x = dose, y = pn_day)) + 
   geom_violin() + 
   facet_grid(day_of_tx ~ outcome) # in plot here day of tx against outcome interested 
