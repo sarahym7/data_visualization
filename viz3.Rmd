@@ -128,7 +128,7 @@ weather_df %>%
 
 ```{r}
 weather_df %>% 
-  filter(name!= "Waikiki_HA") %>% 
+  filter(name!= "Molokai_HI") %>% 
   mutate(
     cold = case_when(
       tmax< 5~ "cold",
@@ -143,25 +143,77 @@ weather_df %>%
 ```{r}
 
 weather_df %>%  
-  drop_na(tmax) |> 
   mutate(cold = case_when(
     tmax <  5 ~ "cold",
     tmax >= 5 ~ "not_cold",
     TRUE     ~ ""
-  )) |> 
-  filter(name != "Waikiki_HA") %>%  
+  )) %>% 
+  filter(name != "Molokai_HI") %>%  
   janitor::tabyl(name, cold)            #this structure is better for 2x2
 ```
 
 
 
+## General Summarries 
+
+You can do lots of summaries
+
+```{r}
+weather_df %>% 
+  group_by(month) %>% 
+  summarize(
+    mean_tmax = mean(tmax, na.rm = TRUE), #na.rm removes the missing variables
+    mean_prcp = mean(prcp, na.rm = TRUE),
+    median_tmin = median(tmin, na.rm = TRUE)
+     )
+
+```
+
+
+This is a dataframe! SO we can make a plot
+
+```{r}
+
+weather_df %>% 
+  group_by(name,month) %>% 
+  summarize(
+    mean_tmax = mean(tmax, na.rm = TRUE), #na.rm removes the missing variables
+    mean_prcp = mean(prcp, na.rm = TRUE),
+    median_tmin = median(tmin, na.rm = TRUE)
+     ) %>% 
+  ggplot(aes( x= month, y=mean_tmax, color = name))+ 
+  geom_point() +
+  geom_line()
+
+
+```
+
+Suppose you want to summarize many columns.
+
+```{r}
+weather_df %>% 
+  group_by(name, month) %>% 
+  summarize(across(prcp: tmin, mean)) #can list a range and use across for each of these columns use this summary
+
+```
+
+
+Reminder: sometimes your results are easier to read in another format ,
+
+```{r}
+weather_df %>% 
+  group_by(name, month) %>% 
+  summarize(mean_tmax = mean(tmax)) %>% 
+  pivot_wider(
+    names_from= name,
+    values_from = mean_tmax
+  )%>% 
+# the names came from names, values came from tmax, and row name is whateve is left in your dataset (using pivot wider)
+  knitr::kable(digits =1)  #formats r markdown and allows to print nicer
 
 
 
-
-
-
-
+```
 
 
 
