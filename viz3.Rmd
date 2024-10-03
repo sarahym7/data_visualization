@@ -2,7 +2,7 @@
 title: "viz3"
 author: "Sarahy Martinez"
 date: "2024-10-03"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
