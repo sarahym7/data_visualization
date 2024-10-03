@@ -94,3 +94,100 @@ weather_df %>%
     ## (`geom_point()`).
 
 ![](viz_2_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+## Scales
+
+It gives you a way to control what happens between x= tmin and y=tmax
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax)) + 
+  geom_point(aes(color = name), alpha = .5)+
+  labs(
+    title = "Temperature Plot",
+    x = "Minimum Daily Temperature (C)",
+    y = "Maximum Daily Temperature (C)",
+    caption = " Data from the rnoaa package; temperatures in 2017"
+  )+
+  scale_x_continuous(
+    breaks=c(-15, 0 , 15),
+    labels = c("-15c", "0", "15")   # need to be same length as breaks, more informative ticks 
+  ) +     #categorical or factor use scale_x_discrete, defines breaks
+scale_y_continuous(
+  trans = "sqrt",   #transform data from linear scatter to sqrt, can also do log 
+  position = "right"  # moves table name to the right
+)
+```
+
+    ## Warning in transformation$transform(x): NaNs produced
+
+    ## Warning in scale_y_continuous(trans = "sqrt", position = "right"): sqrt
+    ## transformation introduced infinite values.
+
+    ## Warning: Removed 142 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](viz_2_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+## Look at scale colors
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax)) + 
+  geom_point(aes(color = name), alpha = .5)+
+  labs(
+    title = "Temperature Plot",
+    x = "Minimum Daily Temperature (C)",
+    y = "Maximum Daily Temperature (C)",
+    caption = " Data from the rnoaa package; temperatures in 2017"
+  )+
+  scale_color_hue(h = c(100,300))   #describes the feature of colors, control over colors 
+```
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](viz_2_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax)) + 
+  geom_point(aes(color = name), alpha = .5)+
+  labs(
+    title = "Temperature Plot",
+    x = "Minimum Daily Temperature (C)",
+    y = "Maximum Daily Temperature (C)",
+    caption = " Data from the rnoaa package; temperatures in 2017"
+  )+
+  scale_color_hue( name = "Location",
+                   h =c(100,300)) #updated from variable "Name" to location 
+```
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](viz_2_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+scale_color_hue is meh, instead
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax)) + 
+  geom_point(aes(color = name), alpha = .5)+
+  labs(
+    title = "Temperature Plot",
+    x = "Minimum Daily Temperature (C)",
+    y = "Maximum Daily Temperature (C)",
+    caption = " Data from the rnoaa package; temperatures in 2017"
+  )+
+  viridis:: scale_color_viridis(   # scale has to be discrete and we have to tell it that
+    
+    name = "Location",
+    discrete = TRUE
+  )
+```
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](viz_2_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
