@@ -437,6 +437,48 @@ display: none;
 ## 10 CentralPark_NY USW00094728 2021-01-10     0   5    -1.6 2021-01-01
 ## # ℹ 2,180 more rows</code></pre>
 </div>
+<div id="counting-the-things" class="section level2">
+<h2>counting the things</h2>
+<p>ie. how many ovbservations exist count months in this code</p>
+<pre class="r"><code>weather_df %&gt;% 
+  group_by(month) %&gt;% 
+  summarize(n_obs = n())   #n() counts for you, n_obs is the variable you created and end result is a tibble </code></pre>
+<pre><code>## # A tibble: 24 × 2
+##    month      n_obs
+##    &lt;date&gt;     &lt;int&gt;
+##  1 2021-01-01    93
+##  2 2021-02-01    84
+##  3 2021-03-01    93
+##  4 2021-04-01    90
+##  5 2021-05-01    93
+##  6 2021-06-01    90
+##  7 2021-07-01    93
+##  8 2021-08-01    93
+##  9 2021-09-01    90
+## 10 2021-10-01    93
+## # ℹ 14 more rows</code></pre>
+<p>we can also use count()</p>
+<pre class="r"><code>weather_df %&gt;% 
+  count(month, name = &quot;n_obs&quot;)</code></pre>
+<pre><code>## # A tibble: 24 × 2
+##    month      n_obs
+##    &lt;date&gt;     &lt;int&gt;
+##  1 2021-01-01    93
+##  2 2021-02-01    84
+##  3 2021-03-01    93
+##  4 2021-04-01    90
+##  5 2021-05-01    93
+##  6 2021-06-01    90
+##  7 2021-07-01    93
+##  8 2021-08-01    93
+##  9 2021-09-01    90
+## 10 2021-10-01    93
+## # ℹ 14 more rows</code></pre>
+<p><strong>NEVER</strong> use base R’s <code>table</code></p>
+<pre class="r"><code>  weather_df %&gt;% 
+  pull(month) %&gt;% 
+  table()  #painful to look at because the result isnt a dataframe, to get to the table function </code></pre>
+</div>
 
 
 

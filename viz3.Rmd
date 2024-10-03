@@ -74,11 +74,40 @@ weather_df %>%
 ```
 
 
+## counting the things
+
+ie. how many ovbservations exist 
+count months in this code 
+
+```{r}
+
+weather_df %>% 
+  group_by(month) %>% 
+  summarize(n_obs = n())   #n() counts for you, n_obs is the variable you created and end result is a tibble 
 
 
 
+```
 
 
+
+we can also use count()
+
+
+```{r}
+
+weather_df %>% 
+  count(month, name = "n_obs")
+```
+
+**NEVER** use base R's `table` 
+
+
+```{r, eval =FALSE}
+  weather_df %>% 
+  pull(month) %>% 
+  table()  #painful to look at because the result isnt a dataframe, to get to the table function 
+```
 
 
 
