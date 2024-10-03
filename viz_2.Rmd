@@ -291,12 +291,16 @@ tmax_date_p =
   geom_smooth(se = FALSE) + 
   theme(legend.position = "bottom")
 
+#  Create individual datasets/ panels cant do by facet but we can use patchwork. 
 (tmax_tmin_p + prcp_dens_p) / tmax_date_p  #patchwork makes different panels with combining diff datasets / puts that plot below
 ```
-  Create individual datasets/ panels cant do by facet but we can use patchwork. 
+
+
   
-  
-  
+```{r}
+
+```
+
   
   
   
