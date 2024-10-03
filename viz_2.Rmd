@@ -185,15 +185,46 @@ weather_df %>%
     caption = " Data from the rnoaa package; temperatures in 2017"
   )+
   viridis:: scale_color_viridis(   # scale has to be discrete and we have to tell it that
-    
     name = "Location",
     discrete = TRUE )+
-      theme_bw()  # made background white and bold outside , theme_classic no gridlines, ggthemes:: has many other themes
+      theme_minimal()+
+      theme(legend.position = "bottom")
+  # mostly used by Jeff, made background white and bold outside , theme_classic no gridlines, ggthemes:: has many other themes, note minimal overrides the location. so have to put after
 
 ```
 
   
+## Setting Options 
+
+```{r, eval=FALSE}
+
+library(tidyverse)
+
+knitr:: opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+
+theme_set(theme_minimal()+ theme(legend.position = "bottom"))
+
+# theme_set to determine whatever theme I want inside of this document. Now everyplot that I make when I load the tidyverse and update the theme everywhere 
+
+# can also update options 
+
+options(
   
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+#This will take care of the color arguement for plots and densities.
+
+scale_fill_discrete = scale_fill_viridis_d()    
+#all the options will make sure it uses the viridus 
+
+```
+
   
   
   
