@@ -185,3 +185,51 @@ weather_df %>%
     ##  9 2021-09-01    90     30
     ## 10 2021-10-01    93     31
     ## # ℹ 14 more rows
+
+## A digression on 2x2 tables
+
+``` r
+weather_df %>% 
+  filter(name!= "Waikiki_HA") %>% 
+  mutate(
+    cold = case_when(
+      tmax< 5~ "cold",
+      tmax >= 5 ~ "not_cold",  # ~ if this is true 
+      TRUE ~ ""
+    )
+  ) %>% 
+  group_by(name, cold) %>% 
+  summarize( count = n())   #2x2 but not helpful, can also do a pivot wider but below is better
+```
+
+    ## `summarise()` has grouped output by 'name'. You can override using the
+    ## `.groups` argument.
+
+    ## # A tibble: 7 × 3
+    ## # Groups:   name [3]
+    ##   name           cold       count
+    ##   <chr>          <chr>      <int>
+    ## 1 CentralPark_NY "cold"        96
+    ## 2 CentralPark_NY "not_cold"   634
+    ## 3 Molokai_HI     ""             1
+    ## 4 Molokai_HI     "not_cold"   729
+    ## 5 Waterhole_WA   ""            16
+    ## 6 Waterhole_WA   "cold"       319
+    ## 7 Waterhole_WA   "not_cold"   395
+
+``` r
+weather_df %>%  
+  drop_na(tmax) |> 
+  mutate(cold = case_when(
+    tmax <  5 ~ "cold",
+    tmax >= 5 ~ "not_cold",
+    TRUE     ~ ""
+  )) |> 
+  filter(name != "Waikiki_HA") %>%  
+  janitor::tabyl(name, cold)            #this structure is better for 2x2
+```
+
+    ##            name cold not_cold
+    ##  CentralPark_NY   96      634
+    ##      Molokai_HI    0      729
+    ##    Waterhole_WA  319      395

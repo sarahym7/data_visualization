@@ -124,6 +124,55 @@ weather_df %>%
 ```
 
 
+## A digression on 2x2 tables 
+
+```{r}
+weather_df %>% 
+  filter(name!= "Waikiki_HA") %>% 
+  mutate(
+    cold = case_when(
+      tmax< 5~ "cold",
+      tmax >= 5 ~ "not_cold",  # ~ if this is true 
+      TRUE ~ ""
+    )
+  ) %>% 
+  group_by(name, cold) %>% 
+  summarize( count = n())   #2x2 but not helpful, can also do a pivot wider but below is better
+```
+
+```{r}
+
+weather_df %>%  
+  drop_na(tmax) |> 
+  mutate(cold = case_when(
+    tmax <  5 ~ "cold",
+    tmax >= 5 ~ "not_cold",
+    TRUE     ~ ""
+  )) |> 
+  filter(name != "Waikiki_HA") %>%  
+  janitor::tabyl(name, cold)            #this structure is better for 2x2
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
