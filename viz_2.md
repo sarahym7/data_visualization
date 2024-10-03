@@ -360,6 +360,7 @@ tmax_date_p =
   geom_smooth(se = FALSE) + 
   theme(legend.position = "bottom")
 
+#  Create individual datasets/ panels cant do by facet but we can use patchwork. 
 (tmax_tmin_p + prcp_dens_p) / tmax_date_p  #patchwork makes different panels with combining diff datasets / puts that plot below
 ```
 
@@ -376,5 +377,80 @@ tmax_date_p =
     ## Removed 17 rows containing missing values or values outside the scale range
     ## (`geom_point()`).
 
-![](viz_2_files/figure-gfm/unnamed-chunk-14-1.png)<!-- --> Create
-individual datasets/ panels cant do by facet but we can use patchwork.
+![](viz_2_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+
+## Data Manipulation
+
+Control your factors
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = name, y= tmax, fill =name))+
+  geom_violin(alpha =0.5) 
+```
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_ydensity()`).
+
+![](viz_2_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+
+``` r
+# issue rn with this plot is that the name argument might not make perfect sense. Not highest to lowest it is going in alphabetical order 
+
+# name variable is character so when it comes to making plots all of those character variables included in the aesthetic gets converted to a factor and the factors in R are represented by numbers with text labels. So ggplot will take character CentralPark_NY and call it one with CP label and 2 labeled Waikiki etc. So if we wanted to put it in order we have to know what ggplot is doing with factors by putting by default a character variable, converting it to a factor and placing alphabetical order. 
+#To place into a different order we will have to manipulate data differently. 
+
+#So change dataset first by nutating the variable 
+
+weather_df %>% 
+  mutate(
+    name = factor(name), #changed name from character to factor 
+    name = forcats:: fct_relevel( name, c("Molokai_HI"))
+  ) %>% 
+  ggplot(aes(x = name, y= tmax, fill =name))+
+  geom_violin(alpha =0.5) 
+```
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_ydensity()`).
+
+![](viz_2_files/figure-gfm/unnamed-chunk-15-2.png)<!-- -->
+
+What if I wanted densities for tmin and tmax simultaneously ?
+
+``` r
+weather_df %>% 
+filter(name == "CentralPark_NY") %>% 
+  pivot_longer(
+    tmax:tmin,
+    names_to = "observation", 
+    values_to = "temp") %>% 
+  ggplot(aes(x = temp, fill = observation)) +   #temp distribution for tmax and tmin
+  geom_density(alpha = .5) + 
+  facet_grid(~name) + 
+  viridis::scale_fill_viridis(discrete = TRUE)
+```
+
+![](viz_2_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+
+``` r
+#remove filter and facet
+weather_df %>% 
+  pivot_longer(
+    tmax:tmin,
+    names_to = "observation", 
+    values_to = "temp") %>% 
+  ggplot(aes(x = temp, fill = observation)) +   #temp distribution for tmax and tmin
+  geom_density(alpha = .5) + 
+  facet_grid(~name) + 
+  viridis::scale_fill_viridis(discrete = TRUE)
+```
+
+    ## Warning: Removed 34 rows containing non-finite outside the scale range
+    ## (`stat_density()`).
+
+![](viz_2_files/figure-gfm/unnamed-chunk-16-2.png)<!-- -->
+
+``` r
+#if you need to make a plot like this using ggplot will be hard, so recognize as a data tidyness issue instead makes it easier.
+```
