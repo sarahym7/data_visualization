@@ -191,3 +191,57 @@ weather_df %>%
     ## (`geom_point()`).
 
 ![](viz_2_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
+Moving away from things that control specific mappings and not data
+dependent
+
+## Themes
+
+doesn’t really depend on anything. Where the caption is absent on the
+data or AES mapping, deals with overall structure.
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax)) + 
+  geom_point(aes(color = name), alpha = .5)+
+  labs(
+    title = "Temperature Plot",
+    x = "Minimum Daily Temperature (C)",
+    y = "Maximum Daily Temperature (C)",
+    caption = " Data from the rnoaa package; temperatures in 2017"
+  )+
+  viridis:: scale_color_viridis(   # scale has to be discrete and we have to tell it that
+    
+    name = "Location",
+    discrete = TRUE )+
+      theme(legend.position = "bottom")   #moved legend at the bottom , there are other arguments 
+```
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](viz_2_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+Suppose we didn’t like the background etc. Changing the overall theme
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax)) + 
+  geom_point(aes(color = name), alpha = .5)+
+  labs(
+    title = "Temperature Plot",
+    x = "Minimum Daily Temperature (C)",
+    y = "Maximum Daily Temperature (C)",
+    caption = " Data from the rnoaa package; temperatures in 2017"
+  )+
+  viridis:: scale_color_viridis(   # scale has to be discrete and we have to tell it that
+    
+    name = "Location",
+    discrete = TRUE )+
+      theme_bw()  # made background white and bold outside , theme_classic no gridlines, ggthemes:: has many other themes
+```
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](viz_2_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
