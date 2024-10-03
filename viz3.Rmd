@@ -111,6 +111,18 @@ weather_df %>%
 
 
 
+other helpful counters 
+
+```{r}
+weather_df %>% 
+  group_by(month) %>% 
+  summarize(
+    n_obs = n(),
+    n_days = n_distinct(date) #n_distint looks at this month how many dated are distinct 
+  )
+
+```
+
 
 
 
