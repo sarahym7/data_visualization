@@ -35,10 +35,61 @@ weather_df =
 
 ```
 
+## Remember this plot?
+
 ```{r}
-weather_df |> 
+weather_df %>% 
   ggplot(aes(x = tmin, y = tmax)) + 
-  geom_point(aes(color = name), alpha = .5)
+  geom_point(aes(color = name), alpha = .5)  #3 aesthetics defined  tmin, tmax, color 
 
 ```
+
+If this were a plot we wanted to share its sufficient but someone might not know whats going on so we will add a text or label.
+
+## Labels 
+
+```{r}
+
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax)) + 
+  geom_point(aes(color = name), alpha = .5)+
+  labs(
+    title = "Temperature Plot",
+    x = "Minimum Daily Temperature (C)",
+    y = "Maximum Daily Temperature (C)",
+    caption = " Data from the rnoaa package; temperatures in 2017"
+  )
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

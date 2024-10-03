@@ -60,13 +60,37 @@ weather_df =
 
     ## file min/max dates: 1999-09-01 / 2024-09-30
 
+## Remember this plot?
+
 ``` r
-weather_df |> 
+weather_df %>% 
   ggplot(aes(x = tmin, y = tmax)) + 
-  geom_point(aes(color = name), alpha = .5)
+  geom_point(aes(color = name), alpha = .5)  #3 aesthetics defined  tmin, tmax, color 
 ```
 
     ## Warning: Removed 17 rows containing missing values or values outside the scale range
     ## (`geom_point()`).
 
 ![](viz_2_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+If this were a plot we wanted to share its sufficient but someone might
+not know whats going on so we will add a text or label.
+
+## Labels
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax)) + 
+  geom_point(aes(color = name), alpha = .5)+
+  labs(
+    title = "Temperature Plot",
+    x = "Minimum Daily Temperature (C)",
+    y = "Maximum Daily Temperature (C)",
+    caption = " Data from the rnoaa package; temperatures in 2017"
+  )
+```
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](viz_2_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
