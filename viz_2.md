@@ -235,13 +235,88 @@ weather_df %>%
     caption = " Data from the rnoaa package; temperatures in 2017"
   )+
   viridis:: scale_color_viridis(   # scale has to be discrete and we have to tell it that
-    
     name = "Location",
     discrete = TRUE )+
-      theme_bw()  # made background white and bold outside , theme_classic no gridlines, ggthemes:: has many other themes
+      theme_minimal()+
+      theme(legend.position = "bottom")
 ```
 
     ## Warning: Removed 17 rows containing missing values or values outside the scale range
     ## (`geom_point()`).
 
 ![](viz_2_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+``` r
+  # mostly used by Jeff, made background white and bold outside , theme_classic no gridlines, ggthemes:: has many other themes, note minimal overrides the location. so have to put after
+```
+
+## Setting Options
+
+``` r
+library(tidyverse)
+
+knitr:: opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+
+theme_set(theme_minimal()+ theme(legend.position = "bottom"))
+
+# theme_set to determine whatever theme I want inside of this document. Now everyplot that I make when I load the tidyverse and update the theme everywhere 
+
+# can also update options 
+
+options(
+  
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+#This will take care of the color arguement for plots and densities.
+
+scale_fill_discrete = scale_fill_viridis_d()    
+#all the options will make sure it uses the viridus 
+```
+
+# Data args in `geom`
+
+``` r
+central_park_df = 
+  weather_df %>% 
+  filter(name == "CentralPark_NY")
+
+molokai_df = 
+  weather_df %>% 
+  filter(name == "Molokai_HI")
+
+ggplot(data = molokai_df, aes(x = date, y = tmax, color = name)) + 
+  geom_point()+
+geom_line()   #connects the dots 
+```
+
+    ## Warning: Removed 1 row containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](viz_2_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+
+``` r
+ggplot(data = molokai_df, aes(x = date, y = tmax, color = name)) + 
+  geom_point()+
+geom_line(data = central_park_df)
+```
+
+    ## Warning: Removed 1 row containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](viz_2_files/figure-gfm/unnamed-chunk-12-2.png)<!-- -->
+
+If we want to use one whole dataset in geom_point and another in
+geom_line we can like below. Don’t try to make one geom apply to one
+subset and another geom. Instead we created two different datasets and
+then used the data arguement data = central_park to determine which
+dataset applies to which geometry.
+
+Use often when you need OR want to display a summary that you have
+computed from a dataset that is more complicated than the mean and
+median. Often create a second dataset and then use in the arguement.

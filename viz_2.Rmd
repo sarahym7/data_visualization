@@ -225,10 +225,35 @@ scale_fill_discrete = scale_fill_viridis_d()
 
 ```
 
-  
-  
-  
-  
+
+# Data args in `geom`
+
+```{r}
+
+central_park_df = 
+  weather_df %>% 
+  filter(name == "CentralPark_NY")
+
+molokai_df = 
+  weather_df %>% 
+  filter(name == "Molokai_HI")
+
+ggplot(data = molokai_df, aes(x = date, y = tmax, color = name)) + 
+  geom_point()+
+geom_line()   #connects the dots 
+
+
+ggplot(data = molokai_df, aes(x = date, y = tmax, color = name)) + 
+  geom_point()+
+geom_line(data = central_park_df)
+
+```
+
+
+If we want to use one whole dataset in geom_point and another in geom_line  we can like below. Don't try to make one geom apply to one subset and another geom. Instead we created two different datasets and then used the data arguement data = central_park to determine which dataset applies to which geometry.  
+
+Use often when you need OR want to display a summary that you have computed from a dataset that is more complicated than the mean and median. Often create a second dataset and then use in the arguement. 
+
   
   
   
