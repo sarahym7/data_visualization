@@ -316,7 +316,7 @@ weather_df %>%
     names_from= name,
     values_from = mean_tmax
   )%>% 
-# the names came from names, values came from tmax, and row name is whateve is left in your dataset (using pivot wider)
+# the names came from names, values came from tmax, and row name is whatever is left in your dataset (using pivot wider)
   knitr::kable(digits =1)  #formats r markdown and allows to print nicer
 ```
 
@@ -349,3 +349,133 @@ weather_df %>%
 | 2022-10-01 |           17.4 |       29.2 |         11.9 |
 | 2022-11-01 |           14.0 |       28.0 |          2.1 |
 | 2022-12-01 |            6.8 |       27.3 |           NA |
+
+Now, another funcion affected by group_by is mutate
+
+## `group_by` and `mutate`
+
+if you forget that you grouped can get into trouble
+
+``` r
+weather_df %>% 
+  group_by(name) %>% 
+  mutate(
+    mean_tmax = mean(tmax, na.rm = TRUE), #GROUPING when you do a mutate it will compute some observation and define a new variable according to this group first and then and this group etc. Why care because we might want to center to remove vertical distance.
+ centered_tmax = tmax - mean_tmax  # we didn't subtract same mean from everyone just waikiki from waikiki etc. 
+     ) %>% 
+  ggplot(aes(x=date, y = centered_tmax, color=name))+
+  geom_point()
+```
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+<img src="viz3_files/figure-gfm/unnamed-chunk-13-1.png" width="90%" />
+
+about window functions
+
+so in the example above we took the mean and it took every t_max value
+observation and based on this tmax it then plugged in that for each row
+in our dataset.
+
+In windown functions you put in 365 values and it spits out 365 values
+and these might be different values.
+
+ranking …
+
+``` r
+weather_df %>% 
+  group_by(name, month) %>%  #group first
+  mutate(
+    temp_rank = min_rank(tmax)) %>%   #we want to define a ranking according to the min_ rank tmax, temp rank we put the tmax values and says its the 22nd and 12 lowest values then the 5, 4th, 3 coldest days in the month. then filter for coldest day in each month. 
+  filter(temp_rank == 1) # spits out rank 
+```
+
+    ## # A tibble: 92 × 8
+    ## # Groups:   name, month [72]
+    ##    name           id          date        prcp  tmax  tmin month      temp_rank
+    ##    <chr>          <chr>       <date>     <dbl> <dbl> <dbl> <date>         <int>
+    ##  1 CentralPark_NY USW00094728 2021-01-29     0  -3.8  -9.9 2021-01-01         1
+    ##  2 CentralPark_NY USW00094728 2021-02-08     0  -1.6  -8.2 2021-02-01         1
+    ##  3 CentralPark_NY USW00094728 2021-03-02     0   0.6  -6   2021-03-01         1
+    ##  4 CentralPark_NY USW00094728 2021-04-02     0   3.9  -2.1 2021-04-01         1
+    ##  5 CentralPark_NY USW00094728 2021-05-29   117  10.6   8.3 2021-05-01         1
+    ##  6 CentralPark_NY USW00094728 2021-05-30   226  10.6   8.3 2021-05-01         1
+    ##  7 CentralPark_NY USW00094728 2021-06-11     0  20.6  16.7 2021-06-01         1
+    ##  8 CentralPark_NY USW00094728 2021-06-12     0  20.6  16.7 2021-06-01         1
+    ##  9 CentralPark_NY USW00094728 2021-07-03    86  18.9  15   2021-07-01         1
+    ## 10 CentralPark_NY USW00094728 2021-08-04     0  24.4  19.4 2021-08-01         1
+    ## # ℹ 82 more rows
+
+``` r
+#opposite order
+weather_df %>% 
+  group_by(name, month) %>%  #group first
+  mutate(temp_rank = min_rank(desc(tmax)))
+```
+
+    ## # A tibble: 2,190 × 8
+    ## # Groups:   name, month [72]
+    ##    name           id          date        prcp  tmax  tmin month      temp_rank
+    ##    <chr>          <chr>       <date>     <dbl> <dbl> <dbl> <date>         <int>
+    ##  1 CentralPark_NY USW00094728 2021-01-01   157   4.4   0.6 2021-01-01        17
+    ##  2 CentralPark_NY USW00094728 2021-01-02    13  10.6   2.2 2021-01-01         1
+    ##  3 CentralPark_NY USW00094728 2021-01-03    56   3.3   1.1 2021-01-01        19
+    ##  4 CentralPark_NY USW00094728 2021-01-04     5   6.1   1.7 2021-01-01         9
+    ##  5 CentralPark_NY USW00094728 2021-01-05     0   5.6   2.2 2021-01-01        13
+    ##  6 CentralPark_NY USW00094728 2021-01-06     0   5     1.1 2021-01-01        14
+    ##  7 CentralPark_NY USW00094728 2021-01-07     0   5    -1   2021-01-01        14
+    ##  8 CentralPark_NY USW00094728 2021-01-08     0   2.8  -2.7 2021-01-01        20
+    ##  9 CentralPark_NY USW00094728 2021-01-09     0   2.8  -4.3 2021-01-01        20
+    ## 10 CentralPark_NY USW00094728 2021-01-10     0   5    -1.6 2021-01-01        14
+    ## # ℹ 2,180 more rows
+
+Can we take all of these oberservation, shift them and then drop them
+down.
+
+``` r
+weather_df %>% 
+  group_by(name) %>%  #group first
+  mutate(lag_temp = lag(tmax,5))
+```
+
+    ## # A tibble: 2,190 × 8
+    ## # Groups:   name [3]
+    ##    name           id          date        prcp  tmax  tmin month      lag_temp
+    ##    <chr>          <chr>       <date>     <dbl> <dbl> <dbl> <date>        <dbl>
+    ##  1 CentralPark_NY USW00094728 2021-01-01   157   4.4   0.6 2021-01-01     NA  
+    ##  2 CentralPark_NY USW00094728 2021-01-02    13  10.6   2.2 2021-01-01     NA  
+    ##  3 CentralPark_NY USW00094728 2021-01-03    56   3.3   1.1 2021-01-01     NA  
+    ##  4 CentralPark_NY USW00094728 2021-01-04     5   6.1   1.7 2021-01-01     NA  
+    ##  5 CentralPark_NY USW00094728 2021-01-05     0   5.6   2.2 2021-01-01     NA  
+    ##  6 CentralPark_NY USW00094728 2021-01-06     0   5     1.1 2021-01-01      4.4
+    ##  7 CentralPark_NY USW00094728 2021-01-07     0   5    -1   2021-01-01     10.6
+    ##  8 CentralPark_NY USW00094728 2021-01-08     0   2.8  -2.7 2021-01-01      3.3
+    ##  9 CentralPark_NY USW00094728 2021-01-09     0   2.8  -4.3 2021-01-01      6.1
+    ## 10 CentralPark_NY USW00094728 2021-01-10     0   5    -1.6 2021-01-01      5.6
+    ## # ℹ 2,180 more rows
+
+``` r
+#if you wanna compute changes from this day or this, or does yesterdays temp predict today 
+
+
+weather_df %>% 
+  group_by(name) %>%  
+  mutate(temp_change = tmax - lag(tmax)) %>%  # we can also compute summaries
+summarize(
+  temp_change_max = max(temp_change, na.rm = TRUE),
+   temp_change_sd = sd(temp_change, na.rm = TRUE)
+)
+```
+
+    ## # A tibble: 3 × 3
+    ##   name           temp_change_max temp_change_sd
+    ##   <chr>                    <dbl>          <dbl>
+    ## 1 CentralPark_NY            12.2           4.43
+    ## 2 Molokai_HI                 5.6           1.24
+    ## 3 Waterhole_WA              11.1           3.04
+
+Helpful because for example can you please compute the the day to day
+temperature variability, the day to day standard deviations and
+temperatures for each group. It has already been done above. We are
+answering a relatively complex question in a short amount of code.

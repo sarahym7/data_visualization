@@ -208,19 +208,76 @@ weather_df %>%
     names_from= name,
     values_from = mean_tmax
   )%>% 
-# the names came from names, values came from tmax, and row name is whateve is left in your dataset (using pivot wider)
+# the names came from names, values came from tmax, and row name is whatever is left in your dataset (using pivot wider)
   knitr::kable(digits =1)  #formats r markdown and allows to print nicer
 
+```
 
+Now, another funcion affected by group_by is mutate 
+
+## `group_by` and `mutate`
+
+if you forget that you grouped can get into trouble
+
+```{r}
+
+weather_df %>% 
+  group_by(name) %>% 
+  mutate(
+    mean_tmax = mean(tmax, na.rm = TRUE), #GROUPING when you do a mutate it will compute some observation and define a new variable according to this group first and then and this group etc. Why care because we might want to center to remove vertical distance.
+ centered_tmax = tmax - mean_tmax  # we didn't subtract same mean from everyone just waikiki from waikiki etc. 
+     ) %>% 
+  ggplot(aes(x=date, y = centered_tmax, color=name))+
+  geom_point()
 
 ```
 
 
+about window functions 
+
+so in the example above we took the mean and it took every t_max value observation and based on this tmax it then plugged in that for each row in our dataset.
+
+In windown functions you put in  365 values and it spits out 365 values and these might be different values. 
 
 
+ranking ...
+```{r ranking}
+
+weather_df %>% 
+  group_by(name, month) %>%  #group first
+  mutate(
+    temp_rank = min_rank(tmax)) %>%   #we want to define a ranking according to the min_ rank tmax, temp rank we put the tmax values and says its the 22nd and 12 lowest values then the 5, 4th, 3 coldest days in the month. then filter for coldest day in each month. 
+  filter(temp_rank == 1) # spits out rank 
 
 
+#opposite order
+weather_df %>% 
+  group_by(name, month) %>%  #group first
+  mutate(temp_rank = min_rank(desc(tmax)))
+```
 
+
+Can we take all of these oberservation, shift them and then drop them down.
+
+```{r}
+weather_df %>% 
+  group_by(name) %>%  #group first
+  mutate(lag_temp = lag(tmax,5))
+#if you wanna compute changes from this day or this, or does yesterdays temp predict today 
+
+
+weather_df %>% 
+  group_by(name) %>%  
+  mutate(temp_change = tmax - lag(tmax)) %>%  # we can also compute summaries
+summarize(
+  temp_change_max = max(temp_change, na.rm = TRUE),
+   temp_change_sd = sd(temp_change, na.rm = TRUE)
+)
+
+```
+
+Helpful because for example can you please compute the the day to day temperature variability, the day to day standard 
+deviations and temperatures for each group. It has already been done above. We are answering a relatively complex question in a short amount of code. 
 
 
 
