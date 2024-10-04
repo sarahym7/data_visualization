@@ -280,6 +280,9 @@ Helpful because for example can you please compute the the day to day temperatur
 deviations and temperatures for each group. It has already been done above. We are answering a relatively complex question in a short amount of code. 
 
 
+## Quick Note
+summarize only gets you so far. If we want to for example take the weather data frame and ask what is the regression coefficient regressing and group by name and month. Its a hard problem and how do you do that regression. Wont take you quite where you want but the group by and summarize gets you pretty far. 
+
 
 
 
